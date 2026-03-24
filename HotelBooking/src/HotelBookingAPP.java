@@ -1,95 +1,66 @@
+import java.util.HashMap;
+import java.util.Map;
 
-abstract class Room {
+// Room class
+class Room {
+    int beds;
+    int size;
+    double price;
+    int availability;
 
-    private String roomType;
-    private int beds;
-    private double size;
-    private double price;
-
-    public Room(String roomType, int beds, double size, double price) {
-        this.roomType = roomType;
+    public Room(int beds, int size, double price, int availability) {
         this.beds = beds;
         this.size = size;
         this.price = price;
-    }
-
-    public String getRoomType() {
-        return roomType;
-    }
-
-    public int getBeds() {
-        return beds;
-    }
-
-    public double getSize() {
-        return size;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void displayRoomDetails() {
-        System.out.println("Room Type : " + roomType);
-        System.out.println("Beds      : " + beds);
-        System.out.println("Size      : " + size + " sq.ft");
-        System.out.println("Price     : $" + price);
+        this.availability = availability;
     }
 }
-
-class SingleRoom extends Room {
-
-    public SingleRoom() {
-        super("Single Room", 1, 200, 100);
-    }
-}
-
-class DoubleRoom extends Room {
-
-    public DoubleRoom() {
-        super("Double Room", 2, 350, 180);
-    }
-}
-
-class SuiteRoom extends Room {
-
-    public SuiteRoom() {
-        super("Suite Room", 3, 500, 300);
-    }
-}
-
 
 public class HotelBookingAPP {
 
+    private HashMap<String, Room> inventory;
+
+    // Constructor
+    public HotelBookingAPP() {
+        inventory = new HashMap<>();
+    }
+
+    // Add rooms (setup)
+    public void addRoom(String type, int beds, int size, double price, int availability) {
+        inventory.put(type, new Room(beds, size, price, availability));
+    }
+
+    // Search (READ-ONLY)
+    public void searchRooms() {
+        System.out.println("Room Search\n");
+
+        for (Map.Entry<String, Room> entry : inventory.entrySet()) {
+            String type = entry.getKey();
+            Room r = entry.getValue();
+
+            // Show only available rooms
+            if (r.availability > 0) {
+                System.out.println(type + " Room:");
+                System.out.println("Beds: " + r.beds);
+                System.out.println("Size: " + r.size + " sqft");
+                System.out.println("Price per night: " + r.price);
+                System.out.println("Available: " + r.availability);
+                System.out.println();
+            }
+        }
+    }
+
+    // Main method
     public static void main(String[] args) {
 
-        System.out.println("===== Welcome to Book My Stay =====");
-        System.out.println("Room Availability\n");
+        HotelBookingAPP system = new HotelBookingAPP();
 
-        // Polymorphic references
-        Room singleRoom = new SingleRoom();
-        Room doubleRoom = new DoubleRoom();
-        Room suiteRoom = new SuiteRoom();
+        // Add rooms (matching your output)
+        system.addRoom("Single", 1, 250, 1500.0, 5);
+        system.addRoom("Double", 2, 400, 2500.0, 3);
+        system.addRoom("Suite", 3, 750, 5000.0, 2);
 
-        int singleRoomAvailability = 5;
-        int doubleRoomAvailability = 3;
-        int suiteRoomAvailability = 2;
-
-        System.out.println("---- Single Room Details ----");
-        singleRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " + singleRoomAvailability);
-        System.out.println();
-
-        System.out.println("---- Double Room Details ----");
-        doubleRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " + doubleRoomAvailability);
-        System.out.println();
-
-        System.out.println("---- Suite Room Details ----");
-        suiteRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " + suiteRoomAvailability);
-        System.out.println();
-
-        System.out.println("Thank you for using Book My Stay!");
+        // Perform search
+        system.searchRooms();
     }
 }
